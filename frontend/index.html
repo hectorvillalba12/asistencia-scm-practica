@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control de Asistencia</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Sistema de Control de Asistencia</h1>
+    <p id="fecha-hoy"></p>
+  </header>
+
+  <main>
+    <div id="mensaje" class="mensaje oculto" role="status"></div>
+
+    <section class="card">
+      <h2>Registrar asistencia</h2>
+      <form id="form-asistencia">
+        <label>DNI
+          <input id="asis-dni" inputmode="numeric" maxlength="8" placeholder="40123456" required>
+        </label>
+        <label>Materia
+          <input id="asis-materia" value="Programación III" required>
+        </label>
+        <label>Estado
+          <select id="asis-estado">
+            <option value="">Automático (según la hora)</option>
+            <option value="presente">Presente</option>
+            <option value="tardanza">Tardanza</option>
+            <option value="ausente">Ausente</option>
+          </select>
+        </label>
+        <button type="submit">Registrar</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Alta de alumno</h2>
+      <form id="form-alumno">
+        <label>DNI <input id="alu-dni" inputmode="numeric" maxlength="8" required></label>
+        <label>Nombre <input id="alu-nombre" required></label>
+        <label>Apellido <input id="alu-apellido" required></label>
+        <button type="submit">Guardar alumno</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Cerrar la clase</h2>
+      <p class="ayuda">Marca como ausentes a todos los alumnos que no tienen registro hoy en la materia indicada.</p>
+      <form id="form-ausentes">
+        <label>Materia <input id="aus-materia" value="Programación III" required></label>
+        <button type="submit" class="secundario">Marcar ausentes de hoy</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Informe por alumno</h2>
+      <form id="form-informe">
+        <label>DNI <input id="inf-dni" inputmode="numeric" maxlength="8" required></label>
+        <label>Materia (opcional) <input id="inf-materia" placeholder="Todas"></label>
+        <button type="submit">Ver informe</button>
+      </form>
+      <div id="informe" class="oculto">
+        <h3 id="inf-titulo"></h3>
+        <div class="resumen" id="inf-resumen"></div>
+        <div class="tabla-wrap">
+          <table>
+            <thead><tr><th>Fecha</th><th>Hora</th><th>Materia</th><th>Estado</th></tr></thead>
+            <tbody id="inf-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Registros de hoy</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead><tr><th>Hora</th><th>DNI</th><th>Alumno</th><th>Materia</th><th>Estado</th></tr></thead>
+          <tbody id="hoy-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
