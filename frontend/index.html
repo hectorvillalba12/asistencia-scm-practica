@@ -10,79 +10,168 @@
   <header>
     <h1>Sistema de Control de Asistencia</h1>
     <p id="fecha-hoy"></p>
+    <p id="sesion-info" class="oculto">
+      <span id="usuario-nombre"></span>
+      <button id="btn-logout" class="secundario">Salir</button>
+    </p>
   </header>
 
   <main>
     <div id="mensaje" class="mensaje oculto" role="status"></div>
 
-    <section class="card">
-      <h2>Registrar asistencia</h2>
-      <form id="form-asistencia">
-        <label>DNI
-          <input id="asis-dni" inputmode="numeric" maxlength="8" placeholder="40123456" required>
-        </label>
-        <label>Materia
-          <input id="asis-materia" value="Programación III" required>
-        </label>
-        <label>Estado
-          <select id="asis-estado">
-            <option value="">Automático (según la hora)</option>
-            <option value="presente">Presente</option>
-            <option value="tardanza">Tardanza</option>
-            <option value="ausente">Ausente</option>
-          </select>
-        </label>
-        <button type="submit">Registrar</button>
+    <!-- LOGIN -->
+    <section id="login" class="card">
+      <h2>Iniciar sesión</h2>
+      <form id="form-login">
+        <label>Usuario (alumnos: su DNI) <input id="login-user" required></label>
+        <label>Contraseña <input id="login-pass" type="password" required></label>
+        <button type="submit">Ingresar</button>
       </form>
     </section>
 
-    <section class="card">
-      <h2>Alta de alumno</h2>
-      <form id="form-alumno">
-        <label>DNI <input id="alu-dni" inputmode="numeric" maxlength="8" required></label>
-        <label>Nombre <input id="alu-nombre" required></label>
-        <label>Apellido <input id="alu-apellido" required></label>
-        <button type="submit">Guardar alumno</button>
-      </form>
-    </section>
+    <div id="app" class="oculto">
+      <!-- Docente / Admin -->
+      <section class="card" data-roles="admin docente">
+        <h2>Registrar asistencia</h2>
+        <form id="form-asistencia">
+          <label>Curso <select id="asis-curso" class="sel-curso" required></select></label>
+          <label>DNI
+            <input id="asis-dni" inputmode="numeric" maxlength="8" placeholder="40123456" required>
+          </label>
+          <label>Estado
+            <select id="asis-estado">
+              <option value="">Automático (según el horario)</option>
+              <option value="presente">Presente</option>
+              <option value="tardanza">Tardanza</option>
+              <option value="ausente">Ausente</option>
+            </select>
+          </label>
+          <button type="submit">Registrar</button>
+        </form>
+      </section>
 
-    <section class="card">
-      <h2>Cerrar la clase</h2>
-      <p class="ayuda">Marca como ausentes a todos los alumnos que no tienen registro hoy en la materia indicada.</p>
-      <form id="form-ausentes">
-        <label>Materia <input id="aus-materia" value="Programación III" required></label>
-        <button type="submit" class="secundario">Marcar ausentes de hoy</button>
-      </form>
-    </section>
+      <section class="card" data-roles="admin docente">
+        <h2>Cerrar la clase</h2>
+        <p class="ayuda">Marca como ausentes a los inscriptos sin registro hoy en el curso.</p>
+        <form id="form-ausentes">
+          <label>Curso <select id="aus-curso" class="sel-curso" required></select></label>
+          <button type="submit" class="secundario">Marcar ausentes de hoy</button>
+        </form>
+      </section>
 
-    <section class="card">
-      <h2>Informe por alumno</h2>
-      <form id="form-informe">
-        <label>DNI <input id="inf-dni" inputmode="numeric" maxlength="8" required></label>
-        <label>Materia (opcional) <input id="inf-materia" placeholder="Todas"></label>
-        <button type="submit">Ver informe</button>
-      </form>
-      <div id="informe" class="oculto">
-        <h3 id="inf-titulo"></h3>
-        <div class="resumen" id="inf-resumen"></div>
+      <!-- Panel de informes -->
+      <section class="card" data-roles="admin docente">
+        <h2>Informe total</h2>
+        <form id="form-total">
+          <label>Curso
+            <select id="tot-curso" class="sel-curso" data-todos="Todos los cursos"></select>
+          </label>
+          <button type="submit">Ver informe total</button>
+        </form>
+        <div id="tot-panel" class="oculto">
+          <div class="resumen" id="tot-resumen"></div>
+          <div class="tabla-wrap">
+            <table>
+              <thead><tr>
+                <th>Alumno</th><th>DNI</th><th>Curso</th><th>Clases</th><th>P</th>
+                <th>T</th><th>A</th><th>%</th><th>Faltas/Límite</th><th>Estado</th>
+              </tr></thead>
+              <tbody id="tot-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Informe por alumno</h2>
+        <form id="form-informe">
+          <label>DNI <input id="inf-dni" inputmode="numeric" maxlength="8" required></label>
+          <button type="submit">Ver informe</button>
+        </form>
+        <div id="inf-panel" class="oculto">
+          <h3 id="inf-titulo"></h3>
+          <div class="tabla-wrap">
+            <table>
+              <thead><tr>
+                <th>Curso</th><th>Clases</th><th>P</th><th>T</th><th>A</th>
+                <th>%</th><th>Faltas/Límite</th><th>Estado</th>
+              </tr></thead>
+              <tbody id="inf-cursos-tbody"></tbody>
+            </table>
+          </div>
+          <div class="tabla-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Hora</th><th>Curso</th><th>Estado</th></tr></thead>
+              <tbody id="inf-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" data-roles="admin docente">
+        <h2>Registros de hoy</h2>
         <div class="tabla-wrap">
           <table>
-            <thead><tr><th>Fecha</th><th>Hora</th><th>Materia</th><th>Estado</th></tr></thead>
-            <tbody id="inf-tbody"></tbody>
+            <thead><tr><th>Hora</th><th>DNI</th><th>Alumno</th><th>Curso</th><th>Estado</th></tr></thead>
+            <tbody id="hoy-tbody"></tbody>
           </table>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="card">
-      <h2>Registros de hoy</h2>
-      <div class="tabla-wrap">
-        <table>
-          <thead><tr><th>Hora</th><th>DNI</th><th>Alumno</th><th>Materia</th><th>Estado</th></tr></thead>
-          <tbody id="hoy-tbody"></tbody>
-        </table>
-      </div>
-    </section>
+      <!-- Administración -->
+      <section class="card" data-roles="admin">
+        <h2>Alta de alumno</h2>
+        <form id="form-alumno">
+          <label>DNI <input id="alu-dni" inputmode="numeric" maxlength="8" required></label>
+          <label>Nombre <input id="alu-nombre" required></label>
+          <label>Apellido <input id="alu-apellido" required></label>
+          <label>Contraseña (opcional, mín. 8) <input id="alu-pass" type="password" minlength="8"></label>
+          <button type="submit">Guardar alumno</button>
+        </form>
+      </section>
+
+      <section class="card" data-roles="admin">
+        <h2>Alta de docente</h2>
+        <form id="form-docente">
+          <label>DNI <input id="doc-dni" inputmode="numeric" maxlength="8" required></label>
+          <label>Nombre <input id="doc-nombre" required></label>
+          <label>Apellido <input id="doc-apellido" required></label>
+          <label>Usuario <input id="doc-user" minlength="3" required></label>
+          <label>Contraseña (mín. 8) <input id="doc-pass" type="password" minlength="8" required></label>
+          <button type="submit">Guardar docente</button>
+        </form>
+      </section>
+
+      <section class="card" data-roles="admin">
+        <h2>Alta de curso</h2>
+        <form id="form-curso">
+          <label>Nombre <input id="cur-nombre" required></label>
+          <label>Docente <select id="cur-docente" required></select></label>
+          <label>Límite de faltas <input id="cur-limite" type="number" min="0" value="5" required></label>
+          <button type="submit">Guardar curso</button>
+        </form>
+      </section>
+
+      <section class="card" data-roles="admin">
+        <h2>Horarios del curso</h2>
+        <form id="form-horario">
+          <label>Curso <select id="hor-curso" class="sel-curso" required></select></label>
+          <label>Día <select id="hor-dia" required></select></label>
+          <label>Inicio <input id="hor-inicio" type="time" required></label>
+          <label>Fin <input id="hor-fin" type="time" required></label>
+          <button type="submit">Agregar horario</button>
+        </form>
+      </section>
+
+      <section class="card" data-roles="admin">
+        <h2>Inscribir alumno a un curso</h2>
+        <form id="form-inscripcion">
+          <label>DNI <input id="ins-dni" inputmode="numeric" maxlength="8" required></label>
+          <label>Curso <select id="ins-curso" class="sel-curso" required></select></label>
+          <button type="submit">Inscribir</button>
+        </form>
+      </section>
+    </div>
   </main>
 
   <script src="/app.js"></script>

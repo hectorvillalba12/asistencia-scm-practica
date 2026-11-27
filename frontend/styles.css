@@ -119,3 +119,13 @@ th { background: #f8fafc; }
 }
 .resumen strong { display: block; font-size: 1.4rem; }
 .resumen span { font-size: .8rem; color: #6b7280; }
+
+header #sesion-info { margin-top: .6rem; }
+header #sesion-info button { padding: .25rem .8rem; font-size: .85rem; }
+
+.badge.regular { background: #dcfce7; color: var(--ok); }
+.badge.en_riesgo { background: #fef3c7; color: var(--warn); }
+.badge.libre { background: #fee2e2; color: var(--error); }
+
+#app { display: grid; gap: 1rem; }
+.tabla-wrap + .tabla-wrap { margin-top: 1rem; }

@@ -1,23 +1,31 @@
-name: Verificación de Versión y Pruebas CI
+name: Release
 
 on:
   push:
     tags:
-      - 'v*'  # Se activa al publicar cualquier tag que comience con 'v'
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
-  verify-code:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
-
-      - name: Configurar Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -v
 
-      - name: Validar ejecución del módulo de asistencia
-        run: |
-          python main.py
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Crear release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ github.ref_name }}" --generate-notes --title "${{ github.ref_name }}"
